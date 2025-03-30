@@ -45,7 +45,8 @@ class ListeningQuizPage extends StatelessWidget {
                   height: 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
+                    gradient: const LinearGradient(
+                        colors: [Colors.lightBlueAccent, Colors.blue]),
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,

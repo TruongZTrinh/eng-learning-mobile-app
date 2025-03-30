@@ -8,7 +8,7 @@ part 'listening_question_model.g.dart';
 class ListeningQuestionModel with _$ListeningQuestionModel {
   const factory ListeningQuestionModel({
     required String id,
-    required List<String> scriptIds,
+    required String scriptId,
     required String questionText,
     required List<ListeningOptionModel> options,
     required String correctAnswer,

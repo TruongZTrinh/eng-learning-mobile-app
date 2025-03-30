@@ -7,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ListeningQuizController extends GetxController {
+  // Track the status of the button
+  RxBool isButtonEnabled = true.obs;
+
   /// Các câu hỏi trong bài quiz
   RxInt currentQuestionIndex = 0.obs;
   int totalQuestions = 5;
-
-  RxDouble progress = 0.0.obs;
 
   // Các câu nói trong bài quiz
   RxInt currentScriptIndex = 0.obs;
@@ -28,6 +29,13 @@ class ListeningQuizController extends GetxController {
   List<ListeningQuestionModel> get questions => quiz.questions ?? [];
 
   SpeechService speechService = Get.put(SpeechService());
+  RxList<bool> isSpeakingList = <bool>[].obs;
+
+  @override
+  void onInit() {
+    initializeScripts(scripts);
+    super.onInit();
+  }
 
   @override
   void onClose() {
@@ -39,28 +47,32 @@ class ListeningQuizController extends GetxController {
     listSpeakingScripts = listeningScripts;
     currentScriptIndex.value = 0;
     visibleScripts.clear();
+    isSpeakingList.clear();
 
     if (listSpeakingScripts.isNotEmpty) {
-      visibleScripts.add(listSpeakingScripts.first);
+      // visibleScripts.add(listSpeakingScripts.first);
+      isSpeakingList.addAll(List.filled(listSpeakingScripts.length, false));
     }
     // print(listSpeakingScripts);
   }
 
   Future<void> playScriptsUntilQuestion() async {
-    foundRelatedQuestion.value = false; // Reset trước khi bắt đầu
+    if (!isButtonEnabled.value)
+      return; // If the button is disabled, can't press
+
+    isButtonEnabled.value = false; // Disable the button when start
+    foundRelatedQuestion.value = false; // Reset before start
 
     for (var i = currentScriptIndex.value; i < scripts.length; i++) {
-      // visibleScripts.add(listSpeakingScripts[currentScriptIndex.value]);
-      // print(" VisibleScripts:  ${visibleScripts.length}");
+      visibleScripts.add(scripts[i]);
 
-      final script = scripts[i];
-      updateProgress((i + 1) / (scripts.length + 1));
-      // Đọc script
-      await speechService.speak(script.transcript, script.speaker);
+      isSpeakingList[i] = true;
+      await speechService.speak(scripts[i].transcript, scripts[i].speaker);
+      isSpeakingList[i] = false;
 
       // Kiểm tra nếu script liên quan đến câu hỏi
       final relatedQuestion = questions.firstWhereOrNull(
-        (question) => question.scriptIds.contains(script.id),
+        (question) => question.scriptId.contains(scripts[i].id),
       );
 
       if (relatedQuestion != null) {
@@ -77,9 +89,8 @@ class ListeningQuizController extends GetxController {
         foundRelatedQuestion.value = false;
       }
       // Thêm khoảng dừng giữa các câu
-
       currentScriptIndex.value++;
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 700));
     }
     Get.snackbar(
       "Chúc mừng bạn vượt qua quiz!",
@@ -92,14 +103,9 @@ class ListeningQuizController extends GetxController {
   }
 
   void addNextScript() {
-    // if (currentScriptIndex)
-    if (currentScriptIndex < listSpeakingScripts.length - 1) {
-      currentScriptIndex++;
-      visibleScripts.add(listSpeakingScripts[currentScriptIndex.value]);
-      speechService.speak(scripts[currentScriptIndex.value].transcript,
-          scripts[currentScriptIndex.value].speaker);
-      foundRelatedQuestion.value = false;
-      isAnswerCorrect.value = false;
+    if (currentScriptIndex.value < scripts.length) {
+      visibleScripts.add(scripts[currentScriptIndex.value]);
+      currentScriptIndex.value++;
     }
   }
 
@@ -131,28 +137,6 @@ class ListeningQuizController extends GetxController {
 
     if (isAnswerCorrect.value == true) {
       AudioHelper.playAudioFromAsset("correct_sound.mp3");
-      Get.bottomSheet(Container(
-          height: 150,
-          color: Colors.white,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Đáp án sai. Vui lòng thử lại",
-                  style: TextStyle(fontSize: 18, color: Colors.red),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.back(); // Đóng BottomSheet
-                    Get.back(); // Quay về trang trước
-                  },
-                  child: const Text("Quay về"),
-                ),
-              ],
-            ),
-          )));
       nextQuestion();
     } else {
       AudioHelper.playAudioFromAsset("wrong_sound.mp3");
@@ -181,7 +165,8 @@ class ListeningQuizController extends GetxController {
     }
   }
 
-  void updateProgress(double value) {
-    progress.value = value;
+  double calculateScriptDuration(String transcript, double wordsPerSecond) {
+    int wordCount = transcript.split(' ').length;
+    return wordCount / wordsPerSecond;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:english_learning_app/modules/quiz/listening_quiz/controllers/listening_quiz_controlller.dart';
-import 'package:english_learning_app/shared/speech_service.dart';
+import 'package:english_learning_app/shared/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ListeningQuizPratice extends StatelessWidget {
@@ -13,8 +15,21 @@ class ListeningQuizPratice extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Listening Quiz'),
+        title: const Text(
+          'Listening Quiz',
+          textScaler: TextScaler.linear(1.2),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         centerTitle: true,
+        shadowColor: Colors.grey.withAlpha((0.5 * 255).toInt()),
+        elevation: 2,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.secondaryColor,
       ),
       body: Obx(() {
         // Kiểm tra nếu đã tìm thấy câu hỏi liên quan
@@ -23,44 +38,50 @@ class ListeningQuizPratice extends StatelessWidget {
               .questions[listeningQuizController.currentQuestionIndex.value];
           final currentScript = listeningQuizController
               .scripts[listeningQuizController.currentScriptIndex.value];
+          // print("Current script: $currentScript");
+          // print("Current question: $currentQuestion");
 
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "Question ${listeningQuizController.currentQuestionIndex.value + 1}/${listeningQuizController.questions.length}",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text(
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
                       currentQuestion.questionText,
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      softWrap: true,
                     ),
-                    IconButton(
-                        onPressed: () => listeningQuizController.speechService
-                            .speak(currentScript.transcript,
-                                currentScript.speaker),
-                        icon: const Icon(Icons.volume_up))
-                  ],
+                  ),
                 ),
+                IconButton(
+                    onPressed: () => listeningQuizController.speechService
+                        .speak(currentScript.transcript, currentScript.speaker),
+                    icon: const Icon(Icons.volume_up)),
                 const SizedBox(height: 20),
                 ...currentQuestion.options.map((option) {
-                  return ListTile(
+                  return RadioListTile<String>(
                     title: Text(option.text),
-                    leading: Radio<String>(
-                      value: option.id,
-                      groupValue: listeningQuizController.selectedAnswer.value,
-                      onChanged: (value) {
-                        if (value != null) {
-                          listeningQuizController.checkAnswer(value);
-                        }
-                      },
-                    ),
+                    value: option.id,
+                    groupValue: listeningQuizController.selectedAnswer.value,
+                    onChanged: (value) {
+                      if (value != null) {
+                        listeningQuizController.checkAnswer(value);
+                      }
+                    },
                   );
                 }),
               ],
@@ -69,47 +90,86 @@ class ListeningQuizPratice extends StatelessWidget {
         }
 
         // Nếu chưa tìm thấy câu hỏi, hiển thị danh sách scripts
+
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Obx(() {
-                        final progress = listeningQuizController.progress.value;
+                child: ListView.builder(
+                  itemCount: listeningQuizController.visibleScripts.length,
+                  itemBuilder: (context, index) {
+                    return Obx(() {
+                      var script = listeningQuizController.scripts[index];
 
-                        return Stack(
-                          children: [
-                            Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[300], // Màu nền
-
-                                  borderRadius: BorderRadius.circular(20)),
+                      return Row(
+                        mainAxisAlignment: script.speaker == "M"
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.end,
+                        children: [
+                          if (script.speaker == "F" &&
+                              listeningQuizController.isSpeakingList[index])
+                            const SpinKitWave(
+                              color: Colors.blue,
+                              size: 40,
                             ),
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 500),
-                              width:
-                                  MediaQuery.of(context).size.width * progress,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.blue, // Màu chạy
-                                  borderRadius: BorderRadius.circular(20)),
+                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: const LinearGradient(colors: [
+                                Colors.blue,
+                                Colors.lightBlueAccent,
+                              ]),
                             ),
-                          ],
-                        );
-                      }),
-                    ),
-                  ],
+                            child: script.speaker == "F"
+                                ? SvgPicture.asset(
+                                    "assets/images/listening_quiz/female.svg")
+                                : SvgPicture.asset(
+                                    "assets/images/listening_quiz/male.svg"),
+                          ),
+                          const SizedBox(width: 10),
+                          if (script.speaker == "M" &&
+                              listeningQuizController.isSpeakingList[index])
+                            const SpinKitWave(
+                              color: Colors.blue,
+                              size: 40,
+                            ),
+                        ],
+                      );
+                    });
+                  },
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  listeningQuizController.playScriptsUntilQuestion();
-                },
-                child: const Center(child: Text("Start Listening")),
+              InkWell(
+                onTap: listeningQuizController.isButtonEnabled.value
+                    ? () {
+                        listeningQuizController.playScriptsUntilQuestion();
+                      }
+                    : null,
+                child: Ink(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                          colors: [Colors.blue, Colors.lightBlueAccent]),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Start Listening",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

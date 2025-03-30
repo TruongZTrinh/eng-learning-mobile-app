@@ -27,7 +27,7 @@ List<ListeningQuizModel> listeningQuizList = [
       ListeningScriptModel(
         id: "script_04",
         speaker: "F",
-        transcript: " Would you like a small, medium, or large drink?",
+        transcript: "Would you like a small, medium, or large drink?",
       ),
       ListeningScriptModel(
         id: "script_05",
@@ -73,7 +73,7 @@ List<ListeningQuizModel> listeningQuizList = [
     questions: [
       ListeningQuestionModel(
         id: "q_01",
-        scriptIds: ["script_01"],
+        scriptId: "script_01",
         questionText: "What does the man order?",
         options: [
           ListeningOptionModel(id: 'opt_1', text: "A pizza and fries"),
@@ -84,7 +84,7 @@ List<ListeningQuizModel> listeningQuizList = [
       ),
       ListeningQuestionModel(
         id: "q_02",
-        scriptIds: ["script_05"],
+        scriptId: "script_05",
         questionText: "What size drink does the man choose?",
         options: [
           ListeningOptionModel(id: 'opt_1', text: "Medium"),
@@ -95,7 +95,7 @@ List<ListeningQuizModel> listeningQuizList = [
       ),
       ListeningQuestionModel(
         id: "q_03",
-        scriptIds: ["script_07"],
+        scriptId: "script_07",
         questionText: "Does the man want cheese on his burger?",
         options: [
           ListeningOptionModel(id: 'opt_1', text: "No"),
@@ -106,7 +106,7 @@ List<ListeningQuizModel> listeningQuizList = [
       ),
       ListeningQuestionModel(
         id: "q_04",
-        scriptIds: ["script_10"],
+        scriptId: "script_10",
         questionText: "How much is the total bill?",
         options: [
           ListeningOptionModel(id: 'opt_1', text: "\$8.50"),
@@ -117,7 +117,7 @@ List<ListeningQuizModel> listeningQuizList = [
       ),
       ListeningQuestionModel(
         id: "q_05",
-        scriptIds: ["script_12"],
+        scriptId: "script_12",
         questionText: "How long will the food take?",
         options: [
           ListeningOptionModel(id: 'opt_1', text: "10 minutes"),
@@ -127,5 +127,5 @@ List<ListeningQuizModel> listeningQuizList = [
         correctAnswer: "opt_2",
       ),
     ],
-  )
+  ),
 ];

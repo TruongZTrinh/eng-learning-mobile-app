@@ -10,8 +10,7 @@ _$ListeningQuestionModelImpl _$$ListeningQuestionModelImplFromJson(
         Map<String, dynamic> json) =>
     _$ListeningQuestionModelImpl(
       id: json['id'] as String,
-      scriptIds:
-          (json['scriptIds'] as List<dynamic>).map((e) => e as String).toList(),
+      scriptId: json['scriptId'] as String,
       questionText: json['questionText'] as String,
       options: (json['options'] as List<dynamic>)
           .map((e) => ListeningOptionModel.fromJson(e as Map<String, dynamic>))
@@ -23,7 +22,7 @@ Map<String, dynamic> _$$ListeningQuestionModelImplToJson(
         _$ListeningQuestionModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'scriptIds': instance.scriptIds,
+      'scriptId': instance.scriptId,
       'questionText': instance.questionText,
       'options': instance.options,
       'correctAnswer': instance.correctAnswer,

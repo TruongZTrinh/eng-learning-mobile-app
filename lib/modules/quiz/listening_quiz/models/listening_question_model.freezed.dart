@@ -22,7 +22,7 @@ ListeningQuestionModel _$ListeningQuestionModelFromJson(
 /// @nodoc
 mixin _$ListeningQuestionModel {
   String get id => throw _privateConstructorUsedError;
-  List<String> get scriptIds => throw _privateConstructorUsedError;
+  String get scriptId => throw _privateConstructorUsedError;
   String get questionText => throw _privateConstructorUsedError;
   List<ListeningOptionModel> get options => throw _privateConstructorUsedError;
   String get correctAnswer => throw _privateConstructorUsedError;
@@ -45,7 +45,7 @@ abstract class $ListeningQuestionModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      List<String> scriptIds,
+      String scriptId,
       String questionText,
       List<ListeningOptionModel> options,
       String correctAnswer});
@@ -68,7 +68,7 @@ class _$ListeningQuestionModelCopyWithImpl<$Res,
   @override
   $Res call({
     Object? id = null,
-    Object? scriptIds = null,
+    Object? scriptId = null,
     Object? questionText = null,
     Object? options = null,
     Object? correctAnswer = null,
@@ -78,10 +78,10 @@ class _$ListeningQuestionModelCopyWithImpl<$Res,
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      scriptIds: null == scriptIds
-          ? _value.scriptIds
-          : scriptIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      scriptId: null == scriptId
+          ? _value.scriptId
+          : scriptId // ignore: cast_nullable_to_non_nullable
+              as String,
       questionText: null == questionText
           ? _value.questionText
           : questionText // ignore: cast_nullable_to_non_nullable
@@ -109,7 +109,7 @@ abstract class _$$ListeningQuestionModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      List<String> scriptIds,
+      String scriptId,
       String questionText,
       List<ListeningOptionModel> options,
       String correctAnswer});
@@ -131,7 +131,7 @@ class __$$ListeningQuestionModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? scriptIds = null,
+    Object? scriptId = null,
     Object? questionText = null,
     Object? options = null,
     Object? correctAnswer = null,
@@ -141,10 +141,10 @@ class __$$ListeningQuestionModelImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      scriptIds: null == scriptIds
-          ? _value._scriptIds
-          : scriptIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      scriptId: null == scriptId
+          ? _value.scriptId
+          : scriptId // ignore: cast_nullable_to_non_nullable
+              as String,
       questionText: null == questionText
           ? _value.questionText
           : questionText // ignore: cast_nullable_to_non_nullable
@@ -166,26 +166,19 @@ class __$$ListeningQuestionModelImplCopyWithImpl<$Res>
 class _$ListeningQuestionModelImpl implements _ListeningQuestionModel {
   const _$ListeningQuestionModelImpl(
       {required this.id,
-      required final List<String> scriptIds,
+      required this.scriptId,
       required this.questionText,
       required final List<ListeningOptionModel> options,
       required this.correctAnswer})
-      : _scriptIds = scriptIds,
-        _options = options;
+      : _options = options;
 
   factory _$ListeningQuestionModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ListeningQuestionModelImplFromJson(json);
 
   @override
   final String id;
-  final List<String> _scriptIds;
   @override
-  List<String> get scriptIds {
-    if (_scriptIds is EqualUnmodifiableListView) return _scriptIds;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_scriptIds);
-  }
-
+  final String scriptId;
   @override
   final String questionText;
   final List<ListeningOptionModel> _options;
@@ -201,7 +194,7 @@ class _$ListeningQuestionModelImpl implements _ListeningQuestionModel {
 
   @override
   String toString() {
-    return 'ListeningQuestionModel(id: $id, scriptIds: $scriptIds, questionText: $questionText, options: $options, correctAnswer: $correctAnswer)';
+    return 'ListeningQuestionModel(id: $id, scriptId: $scriptId, questionText: $questionText, options: $options, correctAnswer: $correctAnswer)';
   }
 
   @override
@@ -210,8 +203,8 @@ class _$ListeningQuestionModelImpl implements _ListeningQuestionModel {
         (other.runtimeType == runtimeType &&
             other is _$ListeningQuestionModelImpl &&
             (identical(other.id, id) || other.id == id) &&
-            const DeepCollectionEquality()
-                .equals(other._scriptIds, _scriptIds) &&
+            (identical(other.scriptId, scriptId) ||
+                other.scriptId == scriptId) &&
             (identical(other.questionText, questionText) ||
                 other.questionText == questionText) &&
             const DeepCollectionEquality().equals(other._options, _options) &&
@@ -221,13 +214,8 @@ class _$ListeningQuestionModelImpl implements _ListeningQuestionModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      const DeepCollectionEquality().hash(_scriptIds),
-      questionText,
-      const DeepCollectionEquality().hash(_options),
-      correctAnswer);
+  int get hashCode => Object.hash(runtimeType, id, scriptId, questionText,
+      const DeepCollectionEquality().hash(_options), correctAnswer);
 
   /// Create a copy of ListeningQuestionModel
   /// with the given fields replaced by the non-null parameter values.
@@ -249,7 +237,7 @@ class _$ListeningQuestionModelImpl implements _ListeningQuestionModel {
 abstract class _ListeningQuestionModel implements ListeningQuestionModel {
   const factory _ListeningQuestionModel(
       {required final String id,
-      required final List<String> scriptIds,
+      required final String scriptId,
       required final String questionText,
       required final List<ListeningOptionModel> options,
       required final String correctAnswer}) = _$ListeningQuestionModelImpl;
@@ -260,7 +248,7 @@ abstract class _ListeningQuestionModel implements ListeningQuestionModel {
   @override
   String get id;
   @override
-  List<String> get scriptIds;
+  String get scriptId;
   @override
   String get questionText;
   @override

@@ -10,7 +10,8 @@ class SpeakingLessonList extends StatelessWidget {
   final int speakingTopicId;
 
   SpeakingLessonList({super.key, required this.speakingTopicId});
-  final SpeakingQuizController speakingQuizController = Get.find<SpeakingQuizController>();
+  final SpeakingQuizController speakingQuizController =
+      Get.find<SpeakingQuizController>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class SpeakingLessonList extends StatelessWidget {
                           SizedBox(height: 5.h),
                           GestureDetector(
                             onTap: () {
-                              speakingQuizController.isLoading.value=true;
+                              speakingQuizController.isLoading.value = true;
                               Get.to(() => const SpeakingLessonQuiz(),
                                   arguments: {
                                     'lessonId': lesson.id,
@@ -76,7 +77,10 @@ class SpeakingLessonList extends StatelessWidget {
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 30.w, vertical: 10.h),
                                 decoration: BoxDecoration(
-                                    color: AppColors.primaryColor,
+                                    gradient: const LinearGradient(colors: [
+                                      Colors.lightBlueAccent,
+                                      Colors.blue
+                                    ]),
                                     borderRadius: BorderRadius.circular(10.r)),
                                 child: const Text(
                                   'Luyện tập',

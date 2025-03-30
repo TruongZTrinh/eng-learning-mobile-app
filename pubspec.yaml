@@ -43,6 +43,7 @@ flutter:
 
    assets:
       - assets/images/
+      - assets/images/listening_quiz/
       - assets/images/vocabulary/
       - assets/images/speaking_quiz/
       - assets/audios/
