@@ -50,7 +50,10 @@ class QuizPage extends StatelessWidget {
                         height: 50.h,
                         width: 200.w,
                         decoration: BoxDecoration(
-                            color: AppColors.primaryColor,
+                            gradient: const LinearGradient(colors: [
+                              Colors.blue,
+                              Colors.lightBlueAccent,
+                            ]),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.r))),
                         child: Text(

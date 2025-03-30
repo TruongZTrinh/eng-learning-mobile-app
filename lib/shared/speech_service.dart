@@ -1,4 +1,5 @@
 import 'package:english_learning_app/modules/quiz/speaking_quiz/controllers/speaking_quiz_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:get/get.dart';
@@ -63,22 +64,6 @@ class SpeechService extends GetxService {
       }
     } catch (e) {
       print("Error initializing Speech-to-Text: $e");
-    }
-  }
-
-  Future<void> speakWithoutSpeaker(String text) async {
-    try {
-      await _tts.setLanguage("en-US");
-      await _tts.setPitch(1.0);
-      await _tts.setSpeechRate(0.5);
-      await _tts.setVolume(1.0);
-      await _tts.awaitSpeakCompletion(true);
-
-      await _tts.setVoice({"name": "en-us-x-tpd-network", "locale": "en-US"});
-
-      await _tts.speak(text);
-    } catch (e) {
-      print("Error speaking text: $e");
     }
   }
 
