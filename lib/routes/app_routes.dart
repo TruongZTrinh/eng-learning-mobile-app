@@ -7,10 +7,12 @@ import 'package:english_learning_app/modules/quiz/speaking_quiz/views/speaking_q
 import 'package:english_learning_app/modules/quiz/views/quiz_page.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/views/vocab_quiz_page.dart';
 import 'package:english_learning_app/modules/speaking/views/speaking_page.dart';
+import 'package:english_learning_app/modules/splash_screen/views/splash_screen.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
-  static const main = '/';
+  static const splash = '/splash';
+  static const main = '/main';
   static const home = '/home';
   static const quiz = '/quiz';
   static const exercise = '/exercise';
@@ -20,6 +22,12 @@ class AppRoutes {
   static const listeningQuiz = '/listeningQuiz';
 
   static final routes = [
+    GetPage(
+      name: splash,
+      page: () => SplashScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
     GetPage(
       name: main,
       page: () => MainPage(),

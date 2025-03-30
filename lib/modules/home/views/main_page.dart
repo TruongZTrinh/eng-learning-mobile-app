@@ -3,6 +3,7 @@ import 'package:english_learning_app/modules/home/controllers/bottom_navigation_
 import 'package:english_learning_app/modules/home/views/home_page.dart';
 import 'package:english_learning_app/modules/quiz/views/quiz_page.dart';
 import 'package:english_learning_app/modules/speaking/views/speaking_page.dart';
+import 'package:english_learning_app/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,6 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         leading: Padding(
           padding: EdgeInsets.all(13.0.r),
           child: SvgPicture.asset(
@@ -32,7 +32,15 @@ class MainPage extends StatelessWidget {
             colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
           ),
         ),
-        title: const Center(child: Text('CTU EngLearning')),
+        centerTitle: true,
+        title: const Text(
+          'CTU EngLearning',
+          textScaler: TextScaler.linear(1.2),
+        ),
+        shadowColor: Colors.grey.withAlpha((0.5 * 255).toInt()),
+        elevation: 2,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.secondaryColor,
         actions: [
           Container(
               margin: EdgeInsets.only(right: 10.w),

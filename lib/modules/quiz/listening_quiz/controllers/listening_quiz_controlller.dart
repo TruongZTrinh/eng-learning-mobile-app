@@ -33,8 +33,8 @@ class ListeningQuizController extends GetxController {
 
   @override
   void onInit() {
-    initializeScripts(scripts);
     super.onInit();
+    initializeScripts(scripts);
   }
 
   @override

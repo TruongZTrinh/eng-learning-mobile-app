@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             fontFamily: 'Readex Pro',
           ),
-          initialRoute: AppRoutes.main,
+          initialRoute: AppRoutes.splash,
           getPages: AppRoutes.routes,
         );
       },
