@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:english_learning_app/modules/exercise/views/exercise_page.dart';
 import 'package:english_learning_app/modules/home/controllers/bottom_navigation_controller.dart';
 import 'package:english_learning_app/modules/home/views/home_page.dart';
@@ -15,7 +16,7 @@ class MainPage extends StatelessWidget {
   MainPage({super.key});
 
   List<Widget> pages = [
-    const HomePage(),
+    HomePage(),
     const QuizPage(),
     const ExercisePage(),
     const SpeakingPage()
@@ -54,43 +55,53 @@ class MainPage extends StatelessWidget {
         () => pages[navigationController.pageIndex.value],
       ),
       bottomNavigationBar: Obx(
-        () => NavigationBar(
-            selectedIndex: navigationController.pageIndex.value,
-            onDestinationSelected: (index) {
+        () => CurvedNavigationBar(
+            index: navigationController.pageIndex.value,
+            height: 75.h,
+            backgroundColor: Colors.transparent,
+            color: Colors.blue[500]!,
+            animationCurve: Curves.easeInOut,
+            animationDuration: const Duration(milliseconds: 400),
+            buttonBackgroundColor: Colors.blue[700]!,
+            onTap: (index) {
               navigationController.changeTabIndex(index);
             },
-            destinations: [
-              NavigationDestination(
-                icon: SvgPicture.asset(
-                  'assets/images/house-door-fill.svg',
-                  width: 27.w,
-                  height: 27.h,
+            items: [
+              SvgPicture.asset(
+                'assets/images/house-door-fill.svg',
+                width: 40.h,
+                height: 40.h,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
                 ),
-                label: 'Home',
               ),
-              NavigationDestination(
-                icon: SvgPicture.asset(
-                  'assets/images/question-circle-fill.svg',
-                  width: 27.w,
-                  height: 27.h,
+              SvgPicture.asset(
+                'assets/images/question-circle-fill.svg',
+                width: 40.h,
+                height: 40.h,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
                 ),
-                label: 'Quiz',
               ),
-              NavigationDestination(
-                icon: SvgPicture.asset(
-                  'assets/images/journal-bookmark-fill.svg',
-                  width: 27.w,
-                  height: 27.h,
+              SvgPicture.asset(
+                'assets/images/journal-bookmark-fill.svg',
+                width: 40.h,
+                height: 40.h,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
                 ),
-                label: 'Ôn tập',
               ),
-              NavigationDestination(
-                icon: SvgPicture.asset(
-                  'assets/images/people-fill.svg',
-                  width: 27.w,
-                  height: 27.h,
+              SvgPicture.asset(
+                'assets/images/people-fill.svg',
+                width: 40.h,
+                height: 40.h,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
                 ),
-                label: 'Luyện nói',
               ),
             ]),
       ),

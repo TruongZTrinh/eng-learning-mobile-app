@@ -15,6 +15,7 @@ class VocabQuizController extends GetxController {
   // Các biến của page
   final PageController pageController = PageController();
   var currentPageIndex = 0.obs;
+  var isImagesLoaded = false.obs;
 
   // Các biến của phần
   var currentPartIndex = 1.obs;
@@ -34,6 +35,32 @@ class VocabQuizController extends GetxController {
   // 10 từ được lấy ngẫu
   RxList<VocabItemModel> selectedWords = <VocabItemModel>[].obs;
 
+  final List<String> listImage = [
+    "assets/images/vocabulary/topics/food.png",
+    "assets/images/vocabulary/topics/animal.png",
+    "assets/images/vocabulary/topics/bodyPart.jpg",
+    "assets/images/vocabulary/topics/dailyRoutine.jpg",
+    "assets/images/vocabulary/topics/drink.png",
+    "assets/images/vocabulary/topics/emotion.png",
+    "assets/images/vocabulary/topics/hobby.jpg",
+    "assets/images/vocabulary/topics/job.png",
+    "assets/images/vocabulary/topics/tree.jpg",
+    "assets/images/vocabulary/topics/weather.jpg",
+  ];
+
+  final List<String> imageName = [
+    "Thức ăn",
+    "Động vật",
+    "Bộ phận cơ thể",
+    "Thói quen",
+    "Đồ uống",
+    "Cảm xúc",
+    "Sở thích",
+    "Công việc",
+    "Cây cối",
+    "Thời tiết",
+  ];
+
   @override
   void onInit() {
     super.onInit();
@@ -48,6 +75,33 @@ class VocabQuizController extends GetxController {
         }
       },
     );
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Gọi hàm tải trước hình ảnh khi trang đã sẵn sàng
+    _preloadImages();
+  }
+
+  Future<void> _preloadImages() async {
+    try {
+      if (!Get.isRegistered<BuildContext>()) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+
+      for (String imagePath in listImage) {
+        final context = Get.context;
+        if (context != null) {
+          await precacheImage(AssetImage(imagePath), context);
+        }
+      }
+      isImagesLoaded.value = true;
+    } catch (e) {
+      print('Error preloading images: $e');
+      // Set images as loaded even if there's an error to prevent UI from hanging
+      isImagesLoaded.value = true;
+    }
   }
 
   void initializeQuestions() {

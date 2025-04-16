@@ -1,4 +1,4 @@
-import 'package:english_learning_app/modules/quiz/listening_quiz/views/listening_quiz_pratice.dart';
+import 'package:english_learning_app/modules/quiz/listening_quiz/views/listening_quiz_practice.dart';
 import 'package:english_learning_app/shared/app_colors.dart';
 import 'package:english_learning_app/shared/speech_service.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class ListeningQuizPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: GestureDetector(
             onTap: () {
-              Get.to(() => const ListeningQuizPratice());
+              Get.to(() => const ListeningQuizPractice());
             },
             child: ListView.separated(
               separatorBuilder: (context, index) {
