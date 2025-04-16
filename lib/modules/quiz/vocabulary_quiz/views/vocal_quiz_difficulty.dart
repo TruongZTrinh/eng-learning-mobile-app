@@ -39,7 +39,7 @@ class VocalQuizDifficulty extends StatelessWidget {
           style: TextStyle(fontSize: 18.sp),
         ),
         Text(
-          'Động vật',
+          'Thức ăn',
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 35.sp,

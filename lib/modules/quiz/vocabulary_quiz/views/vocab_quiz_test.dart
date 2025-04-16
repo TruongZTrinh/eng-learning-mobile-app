@@ -57,31 +57,31 @@ class VocabQuizTest extends StatelessWidget {
                 },
               );
             }),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Get.find<CountdownController>().startCountDown();
-                vocabQuizController.nextQuestion();
-              },
-              child: const Text("Tiếp tục"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Get.find<CountdownController>().stopCountDown();
-              },
-              child: const Text("Dừng"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Get.find<CountdownController>().startCountDown();
-              },
-              child: const Text("Reset"),
-            ),
-          ],
-        ),
+        const SizedBox(height: 50),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Get.find<CountdownController>().startCountDown();
+        //         vocabQuizController.nextQuestion();
+        //       },
+        //       child: const Text("Tiếp tục"),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Get.find<CountdownController>().stopCountDown();
+        //       },
+        //       child: const Text("Dừng"),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Get.find<CountdownController>().startCountDown();
+        //       },
+        //       child: const Text("Reset"),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

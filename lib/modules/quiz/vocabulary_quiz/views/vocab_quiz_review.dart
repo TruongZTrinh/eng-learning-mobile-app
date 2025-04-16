@@ -31,7 +31,7 @@ class VocabQuizReview extends StatelessWidget {
             final flipController = FlipCardController();
             return GestureDetector(
               onTap: () async {
-                // await ttsService.speak(vocab.word);
+                await ttsService.speak(vocab.word);
                 flipController.flipcard();
                 for (var question in vocabQuizController.questions) {
                   print(question.toJson());

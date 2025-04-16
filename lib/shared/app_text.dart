@@ -22,6 +22,7 @@ class AppText extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight,
       ),
+      softWrap: true,
     );
   }
 }

@@ -12,63 +12,84 @@ class VocabQuizHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        vocabQuizController.nextPage();
-      },
-      child: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 130.h,
-            padding: EdgeInsets.all(10.h),
-            margin: EdgeInsets.only(
-                left: 50.w, right: 50.w, top: 10.h, bottom: 10.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  child: Image.asset(
-                    'assets/images/vocabulary/animals.png',
-                    cacheHeight: 256,
-                    cacheWidth: 256,
-                  ),
-                ),
-                SizedBox(width: 20.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    AppText(
-                      text: 'Động vật',
-                      fontSize: 20.sp,
-                    ),
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          color: Colors.grey,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.grey,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.grey,
-                        )
-                      ],
-                    ),
-                  ],
-                )
-              ],
-            ),
+    return Obx(
+      () {
+        if (!vocabQuizController.isImagesLoaded.value) {
+          return const Center(
+            child: CircularProgressIndicator(),
           );
-        },
-      ),
+        }
+        return GestureDetector(
+          onTap: () {
+            vocabQuizController.nextPage();
+          },
+          child: ListView.builder(
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 130.h,
+                padding: EdgeInsets.all(10.h),
+                margin: EdgeInsets.only(
+                    left: 50.w, right: 50.w, top: 10.h, bottom: 10.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                        child: FutureBuilder(
+                      future: precacheImage(
+                          AssetImage(vocabQuizController.listImage[index]),
+                          context),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return Image.asset(
+                            vocabQuizController.listImage[index],
+                            fit: BoxFit.cover,
+                            cacheHeight: 256,
+                            cacheWidth: 256,
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    )),
+                    SizedBox(width: 20.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AppText(
+                          text: vocabQuizController.imageName[index],
+                          fontSize: 20.sp,
+                        ),
+                        const Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.grey,
+                            ),
+                            Icon(
+                              Icons.star,
+                              color: Colors.grey,
+                            ),
+                            Icon(
+                              Icons.star,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

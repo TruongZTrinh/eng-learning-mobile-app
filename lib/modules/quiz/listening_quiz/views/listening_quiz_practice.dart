@@ -5,8 +5,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class ListeningQuizPratice extends StatelessWidget {
-  const ListeningQuizPratice({super.key});
+class ListeningQuizPractice extends StatelessWidget {
+  const ListeningQuizPractice({super.key});
 
   @override
   Widget build(BuildContext context) {
