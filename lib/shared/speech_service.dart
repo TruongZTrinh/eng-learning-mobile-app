@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:english_learning_app/modules/quiz/speaking_quiz/controllers/speaking_quiz_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:get/get.dart';
@@ -76,10 +77,40 @@ class SpeechService extends GetxService {
       await _tts.setVolume(1.0);
       await _tts.awaitSpeakCompletion(true);
 
-      if (speaker == 'M') {
-        await _tts.setVoice({"name": "en-us-x-tpd-network", "locale": "en-US"});
-      } else if (speaker == 'F') {
-        await _tts.setVoice({"name": "en-us-x-sfg-network", "locale": "en-US"});
+      // Lấy danh sách giọng nói
+      final voices = await _tts.getVoices;
+
+      if (Platform.isIOS || Platform.isMacOS) {
+        var selectedVoice;
+        if (speaker == 'M') {
+          // lọc giọng nam
+          var maleVoices = voices.where((voice) {
+            return voice['locale'] == 'en-US' && voice['gender'] == 'male';
+          }).toList();
+          if (maleVoices.isNotEmpty) {
+            selectedVoice = maleVoices.first;
+          }
+        } else if (speaker == 'F') {
+          // lọc giọng nữ
+          var femaleVoices = voices.where((voice) {
+            return voice['locale'] == 'en-US' && voice['gender'] == 'female';
+          }).toList();
+          if (femaleVoices.isNotEmpty) {
+            selectedVoice = femaleVoices.first;
+          }
+        }
+
+        if (selectedVoice != null) {
+          await _tts.setVoice({"identifier": selectedVoice['identifier']});
+        }
+      } else {
+        if (speaker == 'M') {
+          await _tts
+              .setVoice({"name": "en-us-x-tpd-network", "locale": "en-US"});
+        } else if (speaker == 'F') {
+          await _tts
+              .setVoice({"name": "en-us-x-sfg-network", "locale": "en-US"});
+        }
       }
 
       await _tts.speak(text);

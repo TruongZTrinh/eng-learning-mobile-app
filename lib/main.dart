@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 void main() {
-  Get.put(VocabQuizController());
+  // Get.put(VocabQuizController());
   runApp(const MyApp());
 }
 

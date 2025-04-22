@@ -3,8 +3,10 @@ import 'package:english_learning_app/modules/auth/views/sign_up_page.dart';
 import 'package:english_learning_app/modules/auth/views/survey_page.dart';
 import 'package:english_learning_app/modules/auth/views/survey_question_page.dart';
 import 'package:english_learning_app/modules/exercise/views/exercise_page.dart';
+import 'package:english_learning_app/modules/home/views/detailed_question_page.dart';
 import 'package:english_learning_app/modules/home/views/home_page.dart';
 import 'package:english_learning_app/modules/home/views/main_page.dart';
+import 'package:english_learning_app/modules/profile/views/profile_page.dart';
 import 'package:english_learning_app/modules/quiz/listening_quiz/views/listening_quiz_page.dart';
 import 'package:english_learning_app/modules/quiz/speaking_quiz/speaking_quiz_binding.dart';
 import 'package:english_learning_app/modules/quiz/speaking_quiz/views/speaking_quiz_page.dart';
@@ -26,6 +28,7 @@ class AppRoutes {
   static const surveyQuestions = '/surveyQuestions';
   static const profile = '/profile';
   static const home = '/home';
+  static const detailedQuestion = '/detailedQuestion';
   static const quiz = '/quiz';
   static const exercise = '/exercise';
   static const speaking = '/speaking';
@@ -72,6 +75,12 @@ class AppRoutes {
     GetPage(
       name: home,
       page: () => HomePage(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: detailedQuestion,
+      page: () => DetailedQuestionPage(),
     ),
     GetPage(
       name: quiz,
@@ -84,6 +93,12 @@ class AppRoutes {
     GetPage(
       name: speaking,
       page: () => const SpeakingPage(),
+    ),
+    GetPage(
+      name: profile,
+      page: () => const ProfilePage(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: AppRoutes.speakingQuiz,

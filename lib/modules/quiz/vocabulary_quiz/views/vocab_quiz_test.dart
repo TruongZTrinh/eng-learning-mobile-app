@@ -44,7 +44,7 @@ class VocabQuizTest extends StatelessWidget {
         }),
         SizedBox(height: 20.h),
         CountdownCircularProgressBar(
-            duration: 3,
+            duration: 4,
             onComplete: () {
               AudioHelper.playAudioFromAsset('wrong_sound.mp3');
               Get.find<CountdownController>().stopCountDown();
@@ -58,30 +58,30 @@ class VocabQuizTest extends StatelessWidget {
               );
             }),
         const SizedBox(height: 50),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Get.find<CountdownController>().startCountDown();
-        //         vocabQuizController.nextQuestion();
-        //       },
-        //       child: const Text("Tiếp tục"),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Get.find<CountdownController>().stopCountDown();
-        //       },
-        //       child: const Text("Dừng"),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Get.find<CountdownController>().startCountDown();
-        //       },
-        //       child: const Text("Reset"),
-        //     ),
-        //   ],
-        // ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Get.find<CountdownController>().startCountDown();
+                vocabQuizController.nextQuestion();
+              },
+              child: const Text("Tiếp tục"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.find<CountdownController>().stopCountDown();
+              },
+              child: const Text("Dừng"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.find<CountdownController>().startCountDown();
+              },
+              child: const Text("Reset"),
+            ),
+          ],
+        ),
       ],
     );
   }

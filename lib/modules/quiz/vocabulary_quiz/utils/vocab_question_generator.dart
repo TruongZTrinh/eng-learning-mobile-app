@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_item_model.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_question_model.dart';
+import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocabulary_model.dart';
 import 'package:get/get.dart';
 
-List<VocabQuestionModel> generateQuestions(RxList<VocabItemModel> vocabItems) {
+List<VocabQuestionModel> generateQuestions(RxList<VocabularyModel> vocabItems) {
   List<VocabQuestionModel> questions = [];
 
   for (var vocab in vocabItems) {

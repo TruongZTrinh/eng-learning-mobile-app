@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/controllers/vocab_quiz_controller.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_question_model.dart';
 import 'package:english_learning_app/shared/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:english_learning_app/shared/audio_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,46 +39,38 @@ class VocabSelectImageWidget extends StatelessWidget {
               itemCount: 4,
               itemBuilder: (context, index) {
                 String choice = currentQuestion.choices[index];
-                bool isSelected =
-                    vocabQuizController.selectedAnswer.value == choice;
-                bool isCorrect = vocabQuizController.isCorrect.value;
+                return Obx(() {
+                  bool isSelected =
+                      vocabQuizController.selectedAnswer.value == choice;
+                  bool isCorrect = vocabQuizController.isCorrect.value;
 
-                return GestureDetector(
-                  onTap: () {
-                    vocabQuizController.checkAnswer(choice);
-                    vocabQuizController.selectedAnswer
-                        .refresh(); // Ép GetX rebuild
-
-                    print('dung ko2: $isCorrect');
-
-                    print('Choice: $choice');
-                    print(
-                        'selectedAnswer: ${vocabQuizController.selectedAnswer.value}');
-                    print(
-                        'dung ko isSelected: ${vocabQuizController.selectedAnswer.value == choice}');
-                    print('dung ko isSelected: $isSelected');
-
-                    print('Choices list: ${currentQuestion.choices}');
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? (isCorrect
-                              ? const Color.fromARGB(255, 58, 218, 63)
-                              : Colors.red)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(10.sp),
-                      border:
-                          Border.all(color: AppColors.secondaryColor, width: 2),
+                  return GestureDetector(
+                    onTap: () {
+                      vocabQuizController.checkAnswer(choice);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? (isCorrect
+                                ? const Color.fromARGB(255, 58, 218, 63)
+                                : Colors.red)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(10.sp),
+                        border: Border.all(
+                            color: AppColors.secondaryColor, width: 2),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: currentQuestion.choices[index],
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                     ),
-                    child: Image.asset(
-                      currentQuestion.choices[index],
-                      cacheHeight: 512,
-                      cacheWidth: 512,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                );
+                  );
+                });
               },
             ),
           ),

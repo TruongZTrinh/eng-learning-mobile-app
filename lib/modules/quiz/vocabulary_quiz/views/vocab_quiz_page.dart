@@ -11,7 +11,9 @@ class VocabQuizPage extends StatelessWidget {
   VocabQuizPage({super.key});
 
   final VocabQuizController vocabQuizController =
-      Get.find<VocabQuizController>();
+      Get.put(VocabQuizController());
+  // final VocabQuizController vocabQuizController =
+  //     Get.find<VocabQuizController>();
 
   @override
   Widget build(BuildContext context) {

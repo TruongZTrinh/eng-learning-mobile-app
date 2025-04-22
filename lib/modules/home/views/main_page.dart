@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 class MainPage extends StatelessWidget {
   final BottomNavigationController navigationController =
       Get.put(BottomNavigationController());
+
   MainPage({super.key});
 
   List<Widget> pages = [
@@ -43,12 +44,15 @@ class MainPage extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: AppColors.secondaryColor,
         actions: [
-          Container(
-              margin: EdgeInsets.only(right: 10.w),
-              child: CircleAvatar(
-                radius: 25.r,
-                backgroundImage: const AssetImage('assets/images/avatar.jpg'),
-              ))
+          GestureDetector(
+            onTap: () => Get.toNamed('/profile'),
+            child: Container(
+                margin: EdgeInsets.only(right: 10.w),
+                child: CircleAvatar(
+                  radius: 25.r,
+                  backgroundImage: const AssetImage('assets/images/avatar.jpg'),
+                )),
+          )
         ],
       ),
       body: Obx(
@@ -57,7 +61,7 @@ class MainPage extends StatelessWidget {
       bottomNavigationBar: Obx(
         () => CurvedNavigationBar(
             index: navigationController.pageIndex.value,
-            height: 75.h,
+            height: 70.h,
             backgroundColor: Colors.transparent,
             color: Colors.blue[500]!,
             animationCurve: Curves.easeInOut,

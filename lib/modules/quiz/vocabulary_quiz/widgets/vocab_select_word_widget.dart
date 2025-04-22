@@ -1,10 +1,10 @@
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_question_model.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/controllers/vocab_quiz_controller.dart';
 import 'package:english_learning_app/shared/app_colors.dart';
-import 'package:english_learning_app/shared/audio_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class VocabSelectWordWidget extends StatelessWidget {
   final VocabQuestionModel questions;
@@ -28,11 +28,15 @@ class VocabSelectWordWidget extends StatelessWidget {
             width: 0.5.sw,
             height: 0.5.sw,
             // color: Colors.white,
-            child: Image.asset(
-              currentQuestion.imgPath,
-              cacheWidth: 512,
-              cacheHeight: 512,
+            child: CachedNetworkImage(
+              imageUrl: currentQuestion.imgPath,
+              memCacheWidth: 512,
+              memCacheHeight: 512,
               fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           Column(
