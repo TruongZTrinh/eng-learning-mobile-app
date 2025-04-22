@@ -1,21 +1,29 @@
-import 'package:english_learning_app/modules/quiz/vocabulary_quiz/data/vocab_data.dart';
-import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_item_model.dart';
+import 'dart:convert';
+import 'package:english_learning_app/constants/api_constants.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocab_question_model.dart';
+import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocabulary_model.dart';
+import 'package:english_learning_app/modules/quiz/vocabulary_quiz/models/vocabulary_quiz_topic.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/utils/vocab_question_generator.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/widgets/vocab_select_image_widget.dart';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/widgets/vocab_select_word_widget.dart';
 import 'package:english_learning_app/shared/app_colors.dart';
+import 'package:english_learning_app/shared/audio_helper.dart';
+import 'package:english_learning_app/shared/token_service.dart';
 import 'package:english_learning_app/widgets/countdown_circular_progress_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class VocabQuizController extends GetxController {
   // Các biến của page
   final PageController pageController = PageController();
   var currentPageIndex = 0.obs;
-  var isImagesLoaded = false.obs;
+  var selectedTopicId = 0.obs;
+  var selectedTopicName = ''.obs;
+  var isLoading = false.obs;
+  RxList<VocabularyQuizTopic> topics = <VocabularyQuizTopic>[].obs;
+  RxList<VocabularyModel> vocabList = <VocabularyModel>[].obs;
 
   // Các biến của phần
   var currentPartIndex = 1.obs;
@@ -31,88 +39,100 @@ class VocabQuizController extends GetxController {
   // Trạng thái lựa chọn
   var selectedAnswer = RxnString();
   var isCorrect = false.obs;
-
-  // 10 từ được lấy ngẫu
-  RxList<VocabItemModel> selectedWords = <VocabItemModel>[].obs;
-
-  final List<String> listImage = [
-    "assets/images/vocabulary/topics/food.png",
-    "assets/images/vocabulary/topics/animal.png",
-    "assets/images/vocabulary/topics/bodyPart.jpg",
-    "assets/images/vocabulary/topics/dailyRoutine.jpg",
-    "assets/images/vocabulary/topics/drink.png",
-    "assets/images/vocabulary/topics/emotion.png",
-    "assets/images/vocabulary/topics/hobby.jpg",
-    "assets/images/vocabulary/topics/job.png",
-    "assets/images/vocabulary/topics/tree.jpg",
-    "assets/images/vocabulary/topics/weather.jpg",
-  ];
-
-  final List<String> imageName = [
-    "Thức ăn",
-    "Động vật",
-    "Bộ phận cơ thể",
-    "Thói quen",
-    "Đồ uống",
-    "Cảm xúc",
-    "Sở thích",
-    "Công việc",
-    "Cây cối",
-    "Thời tiết",
-  ];
+  var showAnswerFeedback = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Gọi initializeQuestions sau khi selectWords đã có dữ liệu
-    ever(
-      selectedWords,
-      (callback) {
-        if (selectedWords.isNotEmpty) {
-          // print("🚀 selectedWords đã có dữ liệu, tạo câu hỏi...");
-          initializeQuestions();
-          totalQuestions = questions.length;
-        }
-      },
-    );
+    isLoading.value = true;
+    initLoading();
+    fetchVocabularyTopics();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    // Gọi hàm tải trước hình ảnh khi trang đã sẵn sàng
-    _preloadImages();
+  Future<void> initLoading() {
+    return Future.delayed(const Duration(seconds: 3), () {
+      isLoading.value = false;
+    });
   }
 
-  Future<void> _preloadImages() async {
+  Future<void> fetchVocabularyTopics() async {
     try {
-      if (!Get.isRegistered<BuildContext>()) {
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
+      // isLoading.value = true;
+      final token = await TokenService.getToken();
+      final response = await http
+          .get(Uri.parse('$BASE_URL/vocabulary-quiz-topics'), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
-      for (String imagePath in listImage) {
-        final context = Get.context;
-        if (context != null) {
-          await precacheImage(AssetImage(imagePath), context);
-        }
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body) as List;
+        topics.assignAll(
+          data.map<VocabularyQuizTopic>(
+            (topic) => VocabularyQuizTopic.fromJson(topic),
+          ),
+        );
+      } else {
+        throw Exception('Failed to load vocabulary topics');
       }
-      isImagesLoaded.value = true;
     } catch (e) {
-      print('Error preloading images: $e');
-      // Set images as loaded even if there's an error to prevent UI from hanging
-      isImagesLoaded.value = true;
+      print("Error fetching vocabulary topics: $e");
+    } finally {
+      // isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchVocabularyByDifficulty(int topicId, String level) async {
+    try {
+      isLoading.value = true;
+      final token = await TokenService.getToken();
+      final response = await http.post(
+        Uri.parse('$BASE_URL/vocabulary-by-difficulty'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'vocabulary_quiz_topic_id': topicId,
+          'level': level,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body) as List;
+        vocabList.assignAll(
+          data.map<VocabularyModel>(
+            (item) => VocabularyModel.fromJson(item),
+          ),
+        );
+
+        // Preload images into cache
+        for (var vocab in vocabList) {
+          precacheImage(
+            NetworkImage(vocab.imgPath),
+            Get.context!,
+          );
+        }
+      } else {
+        throw Exception('Failed to load vocabulary');
+      }
+    } catch (e) {
+      print("Error fetching vocabulary: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
   void initializeQuestions() {
-    questions.assignAll(generateQuestions(selectedWords));
+    questions.assignAll(generateQuestions(vocabList));
+    totalQuestions = questions.length;
   }
 
   void nextPage() {
-    if (currentPageIndex.value == 1) {
-      selectedWords.value = vocabList..shuffle(Random());
-      selectedWords.value = selectedWords.take(10).toList();
-    }
+    // if (currentPageIndex.value == 1) {
+    // selectedWords.value = vocabList..shuffle(Random());
+    // selectedWords.value = selectedWords.take(10).toList();
+    // }
 
     if (pageController.hasClients) {
       pageController.nextPage(
@@ -120,7 +140,7 @@ class VocabQuizController extends GetxController {
         curve: Curves.easeInOut,
       );
     }
-    print(currentPageIndex.value);
+    print("currentPageIndex: ${currentPageIndex.value}");
     currentPageIndex.value++;
   }
 
@@ -196,22 +216,23 @@ class VocabQuizController extends GetxController {
   void checkAnswer(String selected) {
     VocabQuestionModel currentQuestion = questions[currentQuestionIndex.value];
     selectedAnswer.value = selected;
-    selectedAnswer.refresh(); // Cập nhật UI ngay lập tức
+    showAnswerFeedback.value = true;
 
     if (selected == currentQuestion.correctAnswer) {
       isCorrect.value = true;
       questionScore.value += 10;
-      // AudioHelper.playAudioFromAsset('correct_sound.mp3');
+      AudioHelper.playAudioFromAsset('correct_sound.mp3');
       Get.find<CountdownController>().stopCountDown();
 
       Future.delayed(const Duration(milliseconds: 1000), () {
-        selectedAnswer.value = null;
+        showAnswerFeedback.value = false;
         nextQuestion();
         Get.find<CountdownController>().startCountDown();
       });
     } else {
       isCorrect.value = false;
-      // AudioHelper.playAudioFromAsset('wrong_sound.mp3');
+
+      AudioHelper.playAudioFromAsset('wrong_sound.mp3');
       Get.delete<CountdownController>();
 
       Get.defaultDialog(
@@ -220,6 +241,7 @@ class VocabQuizController extends GetxController {
         onConfirm: () {
           Future.delayed(const Duration(milliseconds: 300), () {
             Get.back();
+
             selectedAnswer.value = null;
             previousPage();
           });

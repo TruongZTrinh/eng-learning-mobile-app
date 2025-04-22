@@ -15,19 +15,39 @@ class VocabQuizReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topicId = vocabQuizController.selectedTopicId.value;
+
     return Scaffold(
       body: Obx(() {
+        if (vocabQuizController.vocabList.isEmpty) {
+          return Center(
+            child: Text(
+              'Không có dữ liệu để hiển thị',
+              style: TextStyle(fontSize: 20.sp),
+            ),
+          );
+        }
+        if (vocabQuizController.isLoading.value) {
+          return Center(
+            child: SizedBox(
+              width: 50.w,
+              height: 50.h,
+              child: const CircularProgressIndicator(),
+            ),
+          );
+        }
         return GridView.builder(
           padding:
               EdgeInsets.only(top: 10.h, bottom: 90.h, left: 10.w, right: 10.w),
-          itemCount: vocabQuizController.selectedWords.length,
+          itemCount: vocabQuizController.vocabList.length,
+          // physics: const BouncingScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 4,
             mainAxisSpacing: 4,
           ),
           itemBuilder: (context, index) {
-            var vocab = vocabQuizController.selectedWords[index];
+            var vocab = vocabQuizController.vocabList[index];
             final flipController = FlipCardController();
             return GestureDetector(
               onTap: () async {
@@ -36,10 +56,6 @@ class VocabQuizReview extends StatelessWidget {
                 for (var question in vocabQuizController.questions) {
                   print(question.toJson());
                 }
-                print(
-                    'questions length : ${vocabQuizController.questions.length}');
-                print(
-                    'selectedWords length : ${vocabQuizController.selectedWords.length}');
               },
               child: FlipCard(
                 frontWidget: _frontCard(vocab.imgPath, vocab.word),
@@ -61,7 +77,7 @@ class VocabQuizReview extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.w)),
           onPressed: () {
-            // print(vocabQuizController.questions.toList());
+            vocabQuizController.initializeQuestions();
             vocabQuizController.nextPage();
           },
           child: Text(
@@ -86,7 +102,7 @@ Widget _frontCard(String imgPath, String word) {
         SizedBox(
           height: 130.h,
           width: 130.w,
-          child: Image.asset(
+          child: Image.network(
             imgPath,
             cacheHeight: 512,
             cacheWidth: 512,
@@ -113,12 +129,15 @@ Widget _backCard(String meaning, String example) {
         children: [
           Text(
             meaning,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: 18.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              height: 1.2,
             ),
           ),
+          SizedBox(height: 5.h),
           Text(
             example,
             style: TextStyle(

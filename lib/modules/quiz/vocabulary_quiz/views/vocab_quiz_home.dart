@@ -1,93 +1,122 @@
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/controllers/vocab_quiz_controller.dart';
-import 'package:english_learning_app/shared/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 class VocabQuizHome extends StatelessWidget {
   VocabQuizHome({super.key});
 
   final VocabQuizController vocabQuizController =
-      Get.find<VocabQuizController>();
-
+      Get.put(VocabQuizController());
   @override
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (!vocabQuizController.isImagesLoaded.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return GestureDetector(
-          onTap: () {
-            vocabQuizController.nextPage();
-          },
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 130.h,
-                padding: EdgeInsets.all(10.h),
-                margin: EdgeInsets.only(
-                    left: 50.w, right: 50.w, top: 10.h, bottom: 10.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                        child: FutureBuilder(
-                      future: precacheImage(
-                          AssetImage(vocabQuizController.listImage[index]),
-                          context),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return Image.asset(
-                            vocabQuizController.listImage[index],
-                            fit: BoxFit.cover,
-                            cacheHeight: 256,
-                            cacheWidth: 256,
-                          );
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                    )),
-                    SizedBox(width: 20.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        AppText(
-                          text: vocabQuizController.imageName[index],
-                          fontSize: 20.sp,
-                        ),
-                        const Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: Colors.grey,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.grey,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.grey,
-                            )
-                          ],
+        return Stack(
+          children: [
+            ListView.builder(
+              itemCount: vocabQuizController.topics.length,
+              itemBuilder: (context, index) {
+                final topic = vocabQuizController.topics[index];
+                return GestureDetector(
+                  onTap: () {
+                    final topicId = topic.id;
+                    final topicName = topic.title;
+                    vocabQuizController.selectedTopicId.value = topicId;
+                    vocabQuizController.selectedTopicName.value = topicName;
+                    vocabQuizController.nextPage();
+                  },
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: 100.h,
+                      maxHeight: 150.h,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 10.h,
+                    ),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 10.h,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue.shade100, Colors.blue.shade300],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
                         ),
                       ],
-                    )
-                  ],
+                    ),
+                    child: Row(
+                      children: [
+                        Image.network(
+                          topic.imageUrl,
+                          cacheHeight: 320,
+                          cacheWidth: 320,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(width: 20.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                topic.title,
+                                maxLines: 2,
+                                softWrap: true,
+                                style: TextStyle(
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.grey,
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.grey,
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.grey,
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            if (vocabQuizController.isLoading.value)
+              Center(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.white,
+                  child: const SpinKitThreeBounce(
+                    color: Colors.lightBlue,
+                    size: 50.0,
+                  ),
                 ),
-              );
-            },
-          ),
+              ),
+          ],
         );
       },
     );

@@ -1,6 +1,4 @@
-import 'dart:math';
 import 'package:english_learning_app/modules/quiz/vocabulary_quiz/controllers/vocab_quiz_controller.dart';
-import 'package:english_learning_app/modules/quiz/vocabulary_quiz/data/vocab_data.dart';
 import 'package:english_learning_app/shared/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +19,9 @@ class VocalQuizDifficulty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topicId = vocabQuizController.selectedTopicId.value;
+    final topicName = vocabQuizController.selectedTopicName.value;
+
     return Column(
       children: [
         SizedBox(height: 50.h),
@@ -35,11 +36,11 @@ class VocalQuizDifficulty extends StatelessWidget {
         ),
         SizedBox(height: 30.h),
         Text(
-          'Chủ đề 1',
+          'Chủ đề $topicId',
           style: TextStyle(fontSize: 18.sp),
         ),
         Text(
-          'Thức ăn',
+          topicName,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 35.sp,
@@ -64,9 +65,26 @@ class VocalQuizDifficulty extends StatelessWidget {
               itemCount: 3,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () {
-                    vocabList.shuffle(Random());
-                    vocabQuizController.nextPage();
+                  onTap: () async {
+                    try {
+                      print('TopicId: $topicId');
+                      final level = index == 0
+                          ? 'easy'
+                          : index == 1
+                              ? 'medium'
+                              : 'hard';
+
+                      await vocabQuizController.fetchVocabularyByDifficulty(
+                          topicId, level);
+                      if (vocabQuizController.vocabList.isNotEmpty) {
+                        vocabQuizController.nextPage();
+                      } else {
+                        Get.snackbar('Thông báo',
+                            'Không có từ vựng nào cho độ khó này.');
+                      }
+                    } catch (e) {
+                      print('Error: $e');
+                    }
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
